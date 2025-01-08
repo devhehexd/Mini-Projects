@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: enrollment-service
+  datasource:
+    url: jdbc:mysql://lms-rds-dev.czy8muwmiozh.ap-northeast-2.rds.amazonaws.com:3306/lms_v1_enrollment
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: admin
+    password: 12345678
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  devtools:
+    restart:
+      enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

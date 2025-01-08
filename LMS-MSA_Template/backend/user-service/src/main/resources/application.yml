@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://lms-rds-dev.czy8muwmiozh.ap-northeast-2.rds.amazonaws.com:3306/lms_v1_user
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: admin
+    password: 12345678
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+aws:
+  cognito:
+    userPoolId: ap-southeast-1_h1adBVIzh
+    clientId: 3tjbdeub36c5cactphbuamepv0
+    clientSecret: 1pjtr2fkr79cguhebupdikhmk78mqsvir5cq2v16dq7v1jcis27j
+    region: ap-southeast-1

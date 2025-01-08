@@ -1,0 +1,38 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: course-service
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+  datasource:
+    url: jdbc:mysql://lms-rds-dev.czy8muwmiozh.ap-northeast-2.rds.amazonaws.com:3306/lms_v1_course
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: admin
+    password: 12345678
+    hikari:
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
+aws:
+  s3:
+    bucket-name: lms-dev-bucket
+    region: ap-northeast-2

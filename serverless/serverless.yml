@@ -1,0 +1,120 @@
+service: skb-serverless-board
+
+frameworkVersion: "4"
+
+stages:
+  default:
+    params:
+      tableName: "board-skb-${sls:stage}"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-northeast-2
+  stage: ${opt:stage, 'dev'}
+  
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [BoardTable, Arn]
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: "*"
+  environment:
+    TABLE_NAME: ${param:tableName}
+
+functions:
+  createPost:
+    handler: src/boardService/createPost.handler
+    events:
+      - http:
+          path: /api/posts
+          method: post
+          cors: true
+  listPosts:
+    handler: src/boardService/listPosts.handler
+    events:
+      - http:
+          path: /api/posts
+          method: get
+          cors: true
+  getPost:
+    handler: src/boardService/getPost.handler
+    events:
+      - http:
+          path: /api/posts/{id}/{createdAt}
+          method: get
+          cors: true
+  updatePost:
+    handler: src/boardService/updatePost.handler
+    events:
+      - http:
+          path: /api/posts/{id}/{createdAt}
+          method: put
+          cors: true
+  deletePost:
+    handler: src/boardService/deletePost.handler
+    events:
+      - http:
+          path: /api/posts/{id}/{createdAt}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    BoardTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${param:tableName}
+
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    GatewayResponseDefault5XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+plugins:
+  - serverless-offline
+
+package:
+  patterns:
+    # - "!node_modules/**"
+    - "!.git/**"
+    - node_modules/**

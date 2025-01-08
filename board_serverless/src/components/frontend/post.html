@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 상세</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/form.css">
+
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</head>
+<body>
+  <div class="post-container">
+    <h1 id="postTitle"></h1>
+    <div class="post-info">
+      <p>written by <span id="postAuthor"></span></p>
+      <p class="date-info">Posted on: <span id="postDate"></span></p>
+      <p class="date-info">Last updated: <span id="postUpdateDate"></span></p>
+    </div>
+    <div class="post-content">
+      <p id="postContent"></p>
+    </div>
+    <div class="button-group">
+      <button class="cancel-btn" onclick="location.href='/'">목록</button>
+  </div>
+
+  <script type="module">
+    import { initViewer } from '/js/editor.js';
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+    const createdAt = urlParams.get('date')
+
+    async function loadPost() {
+      
+      try {
+      const response = await fetch(`http://localhost:3000/api/posts/${postId}/${createdAt}`);
+      const post = await response.json();
+
+        document.getElementById('postTitle').textContent = post.title;
+        document.getElementById('postContent').innerHTML = '';
+        initViewer(document.getElementById('postContent'), post.content);
+        document.getElementById('postAuthor').textContent = post.author.id;
+        document.getElementById('postDate').textContent = new Date(post.createdAt).toLocaleString();
+        document.getElementById('postUpdateDate').textContent = new Date(post.updatedAt).toLocaleString();
+
+        // 작성자 일치 여부 확인 및 버튼 표시
+        if (currentUser && currentUser.id === post.author.id) {
+          const buttonGroup = document.querySelector('.button-group');
+          buttonGroup.innerHTML = `
+            <button class="edit-btn" onclick="location.href='/writePost.html?id=${postId}&date=${encodeURIComponent(createdAt)}&mode=edit'">수정</button>
+            <button class="delete-btn" onclick="deletePost('${postId}')">삭제</button>
+            <button class="cancel-btn" onclick="location.href='/'">목록</button>
+          `;       
+        }
+      } catch (error) {
+        console.error('게시글 로드 실패:', error);
+      }
+    }
+
+    async function deletePost() {
+      if (!confirm('정말 삭제하시겠습니까?')) return;
+    
+      try {
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}/${createdAt}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({userId: currentUser.id})
+        });
+    
+        if (response.ok) {
+          alert('게시글이 삭제되었습니다.');
+          location.href = '/';
+        } else {
+          const error = await response.json();
+          alert(error.message || '삭제에 실패했습니다.');
+        } 
+      } catch (error) {
+        console.error('삭제 실패:', error);
+        alert('삭제 중 오류가 발생했습니다.');
+      }
+    }
+
+    // deletePost 함수를 전역으로 노출
+    window.deletePost = deletePost;
+
+    loadPost();
+  </script>
+</body>
+</html>

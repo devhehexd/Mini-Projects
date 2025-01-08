@@ -1,0 +1,140 @@
+/* 기본 스타일 */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* 버튼 스타일 */
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* 게시글 목록 스타일 */
+#posts {
+  margin-top: 20px;
+}
+
+#posts > div {
+  border-bottom: 1px solid #eee;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+#posts > div:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 게시글 제목 스타일 */
+#posts > div h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* 게시글 내용 스타일 */
+#posts > div p {
+  margin: 8px 0;
+  color: #666;
+}
+
+/* 게시글 목록의 날짜 정보 스타일 */
+.post-date-info {
+  margin-left: 10px;
+  font-size: 0.8em;
+  color: #888;
+  font-style: normal;
+}
+
+/* 게시글 날짜 정보 스타일 */
+.date-info {
+  font-size: 0.7em;
+  color: #888;
+  margin: 4px 0;
+}
+
+.post-info {
+  margin-bottom: 20px;
+}
+
+/* 작성자 정보 스타일 */
+.author-info {
+  font-size: 0.85em;
+  font-style: italic;
+  color: #666;
+  margin: 4px 0;
+}
+
+/* Toast UI Editor 스타일 */
+.toastui-editor-defaultUI {
+  border: 1px solid #e4e4e4;
+  border-radius: 4px;
+}
+
+/* 그리기 도구 아이콘 스타일 */
+.toastui-editor-toolbar-icons.drawing {
+  width: 22px !important;
+  height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  text-align: center !important;
+  line-height: 22px !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* 오버레이 */
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* 이미지 에디터 팝업 */
+#imageEditorPopup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}

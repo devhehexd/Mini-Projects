@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시판</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/form.css">
+
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</head>
+<body>
+  <h1>게시글 목록</h1>
+  <button onclick="location.href='/writePost.html'">글쓰기</button>
+  <div id="posts"></div>
+
+  <script type="module">
+    import { initEditor } from '/js/editor.js';
+
+    let editor;
+    let currentUser; 
+
+    //페이지 로드 시 사용자 정보 저장
+    window.onload = function() {
+
+      // 기존 데이터 삭제
+      localStorage.removeItem('currentUser');
+      
+        const user = {
+          id: "testman",
+          username: "Test Test",
+          email: "test@test.com"
+        };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    }
+
+    async function loadPosts() {
+      try {
+        const response = await fetch('http://localhost:3000/api/posts');
+        const posts = await response.json();
+
+        // 최신순 정렬
+        posts.items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        const postsDiv = document.getElementById('posts')
+        postsDiv.innerHTML = ''; // 기존 내용 초기화
+
+        posts.items.forEach(post => {
+
+          const createdAt = new Date(post.createdAt).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+          const updatedAt = new Date(post.updatedAt).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+
+          postsDiv.innerHTML += `
+            <div onClick="location.href='/post.html?id=${post.id}&date=${encodeURIComponent(post.createdAt)}'" style="cursor: pointer">
+              <h2>${post.title}</h2>
+              <p>${post.subtitle}</p>
+              <p class="author-info">written by ${post.author.id}
+                <span class="post-date-info">
+                Posted on ${createdAt} | Last updated ${updatedAt}
+                </span>
+              </p>
+              <hr>
+            </div>
+          `;
+        });
+      } catch (error){
+        console.error('Error', error);
+      }
+    }
+
+    loadPosts();
+
+  </script>
+</body>
+</html>

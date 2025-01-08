@@ -1,0 +1,3 @@
+rootProject.name = 'lms-v1'
+
+include 'api-gateway', 'discovery-server', 'user-service', 'course-service', 'enrollment-service'

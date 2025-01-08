@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/lms-v1.api-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/lms-v1.api-gateway.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cart-service/lms-v1.cart-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cart-service/lms-v1.cart-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/course-service/lms-v1.course-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/course-service/lms-v1.course-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/discovery-server/lms-v1.discovery-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/discovery-server/lms-v1.discovery-server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/enrollment-service/lms-v1.enrollment-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/enrollment-service/lms-v1.enrollment-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/user-service/lms-v1.user-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user-service/lms-v1.user-service.main.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,70 @@
+service: reservation-system
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-northeast-2
+  environment:
+    DYNAMODB_TABLE: ReservationTable
+    SNS_TOPIC_ARN:
+      Ref: NotificationTopic
+    SERVICE_NAME: ${self:service}
+    STAGE: ${sls:stage}
+
+functions:
+  createReservation:
+    handler: handler.createReservation
+    environment:
+      PROCESS_LAMBDA_ARN:
+        Fn::GetAtt: [ProcessReservationLambdaFunction, Arn]    
+    events:
+      - http:
+          path: reservation
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: !GetAtt ReservationTable.Arn
+      - Effect: Allow
+        Action:
+          - events:PutRule
+          - events:PutTargets
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - lambda:InvokeFunction
+        Resource: 
+          - Fn::GetAtt: [ProcessReservationLambdaFunction, Arn]
+
+  processReservation:
+    handler: handler.processReservation
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+        Resource: !GetAtt ReservationTable.Arn
+      - Effect: Allow
+        Action:
+          - sns:Publish
+        Resource: !Ref NotificationTopic
+
+resources:
+  Resources:
+    ReservationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    NotificationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: reservation-notifications

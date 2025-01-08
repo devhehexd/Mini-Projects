@@ -1,0 +1,18 @@
+service: aws-hello-world-service
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+
+plugins:
+  - serverless-offline
